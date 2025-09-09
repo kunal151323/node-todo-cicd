@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo "Installing dependencies..."
+      - npm install
+
+  pre_build:
+    commands:
+      - echo "Pre-build phase (optional tasks)..."
+
+  build:
+    commands:
+      - echo "Build started on `date`"
+      # If you have a build script in package.json, use:
+      - npm run build || echo "No build script found, skipping..."
+
+  post_build:
+    commands:
+      - echo "Build completed on `date`"
+      - mkdir -p output
+      - cp -r * output/
+      - rm -rf output/node_modules
+      - echo "Zipping artifact..."
+      - cd output && zip -r ../artifact.zip .
+      - cd ..
+
+artifacts:
+  files:
+     - artifact.zip
